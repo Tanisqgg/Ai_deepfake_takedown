@@ -1,6 +1,11 @@
 import numpy as np
 from deepface import DeepFace
 
+
+def cosine_similarity(a: np.ndarray, b: np.ndarray) -> float:
+    """Return cosine similarity between two vectors."""
+    return float(a.dot(b) / (np.linalg.norm(a) * np.linalg.norm(b)))
+
 def match_faces(
     img1_path: str,
     img2_path: str,
@@ -30,5 +35,5 @@ def match_faces(
         # no face found → treat as non-match
         return False, 0.0
 
-    sim = float(emb1.dot(emb2) / (np.linalg.norm(emb1) * np.linalg.norm(emb2)))
+    sim = cosine_similarity(emb1, emb2)
     return sim >= threshold, sim

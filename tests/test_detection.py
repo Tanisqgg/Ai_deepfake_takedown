@@ -1,5 +1,5 @@
 import os
-from src.detection_service.face_match import cosine_similarity, match_faces
+from src.detection_service.face_match import match_faces, cosine_similarity
 from src.detection_service.voice_match import match_voices
 
 def test_cosine_similarity_perfect():

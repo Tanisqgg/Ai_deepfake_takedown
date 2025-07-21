@@ -2,8 +2,7 @@ import numpy as np
 from resemblyzer import VoiceEncoder, preprocess_wav
 from pathlib import Path
 
-def cosine_similarity(a: np.ndarray, b: np.ndarray) -> float:
-    return float(a.dot(b) / (np.linalg.norm(a) * np.linalg.norm(b)))
+from .face_match import cosine_similarity
 
 def match_voices(wav1: str, wav2: str, threshold: float = 0.75):
     """
