@@ -1,6 +1,4 @@
-import cv2
 import os
-import tempfile
 from fastapi import FastAPI, UploadFile, File, Form
 from detection_service.face_match import match_faces
 from detection_service.voice_match import match_voices
@@ -17,10 +15,15 @@ async def detect_face(
     # save uploads
     tmp1 = f"/tmp/{client.filename}"
     tmp2 = f"/tmp/{suspect.filename}"
-    with open(tmp1, "wb") as f: f.write(await client.read())
-    with open(tmp2, "wb") as f: f.write(await suspect.read())
+    with open(tmp1, "wb") as f:
+        f.write(await client.read())
+    with open(tmp2, "wb") as f:
+        f.write(await suspect.read())
 
     matched, score = match_faces(tmp1, tmp2, threshold)
+
+    os.remove(tmp1)
+    os.remove(tmp2)
     return {"matched": matched, "similarity": score}
 
 @app.post("/detect/voice/")
@@ -31,10 +34,15 @@ async def detect_voice(
 ):
     tmp1 = f"/tmp/{client.filename}"
     tmp2 = f"/tmp/{suspect.filename}"
-    with open(tmp1, "wb") as f: f.write(await client.read())
-    with open(tmp2, "wb") as f: f.write(await suspect.read())
+    with open(tmp1, "wb") as f:
+        f.write(await client.read())
+    with open(tmp2, "wb") as f:
+        f.write(await suspect.read())
 
     matched, score = match_voices(tmp1, tmp2, threshold)
+
+    os.remove(tmp1)
+    os.remove(tmp2)
     return {"matched": matched, "similarity": score}
 
 @app.post("/detect/video/")
@@ -46,7 +54,8 @@ async def detect_video(
 ):
     # save client image
     client_path = f"/tmp/{client.filename}"
-    with open(client_path, "wb") as f: f.write(await client.read())
+    with open(client_path, "wb") as f:
+        f.write(await client.read())
 
     # download & split video
     vid_path = download_video(video_url)
@@ -57,5 +66,8 @@ async def detect_video(
         matched, score = match_faces(client_path, frame_path, threshold)
         if matched:
             matches.append({"frame_index": idx, "similarity": score})
-
+    os.remove(client_path)
+    os.remove(vid_path)
+    for fp in frames:
+        os.remove(fp)
     return {"matches": matches}

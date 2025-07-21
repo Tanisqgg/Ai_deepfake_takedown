@@ -2,13 +2,13 @@ import cv2
 import tempfile
 from pytube import YouTube
 from typing import List
-import os
 
 def download_video(url: str) -> str:
     """Download a YouTube URL to a temp .mp4 file."""
     yt = YouTube(url)
     stream = yt.streams.filter(progressive=True, file_extension="mp4").order_by("resolution").desc().first()
-    out_path = tempfile.mktemp(suffix=".mp4")
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tmp:
+        out_path = tmp.name
     stream.download(filename=out_path)
     return out_path
 
@@ -25,7 +25,8 @@ def extract_frames(video_path: str, interval_s: float = 1.0) -> List[str]:
     success, img = vid.read()
     while success:
         if idx % step == 0:
-            frame_path = tempfile.mktemp(suffix=".jpg")
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp:
+                frame_path = tmp.name
             cv2.imwrite(frame_path, img)
             frames.append(frame_path)
         success, img = vid.read()
