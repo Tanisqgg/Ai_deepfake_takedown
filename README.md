@@ -34,3 +34,14 @@ pytest
 ```
 
 Some tests are placeholders and require sample media files.
+
+## Running the Server
+
+Start the combined FastAPI application with Uvicorn:
+
+```bash
+uvicorn src.app:app --reload
+```
+
+Ensure you install the required dependencies and set `SERPAPI_KEY` if you plan
+to use the search endpoints.

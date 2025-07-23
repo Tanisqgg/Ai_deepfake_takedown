@@ -3,11 +3,11 @@ from fastapi import FastAPI, Request, UploadFile, File, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from detection_service.main import app as detection_app
-from identity_service.main import app as identity_app
-from search_service.main import app as search_app
-from detection_service.face_match import match_faces
-from detection_service.voice_match import match_voices
+from src.detection_service.main import app as detection_app
+from src.identity_service.main import app as identity_app
+from src.search_service.main import app as search_app
+from src.detection_service.face_match import match_faces
+from src.detection_service.voice_match import match_voices
 
 app = FastAPI(title="AI Deepfake Takedown")
 
