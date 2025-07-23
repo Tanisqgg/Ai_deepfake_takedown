@@ -1,8 +1,8 @@
 import os
 from fastapi import FastAPI, UploadFile, File, Form
-from detection_service.face_match import match_faces
-from detection_service.voice_match import match_voices
-from detection_service.frame_extractor import download_video, extract_frames
+from .face_match import match_faces
+from .voice_match import match_voices
+from .frame_extractor import download_video, extract_frames
 
 app = FastAPI(title="Detection Service")
 
