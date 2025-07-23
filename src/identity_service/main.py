@@ -4,7 +4,7 @@ from .fingerprint import extract_face_embedding, extract_voice_embedding
 
 app = FastAPI(title="Identity Fingerprint Service")
 
-@app.post("/fingerprint/face/")
+@app.post("/face/")
 async def face_fingerprint(file: UploadFile = File(...)):
     # save upload
     path = f"/tmp/{file.filename}"
@@ -13,7 +13,7 @@ async def face_fingerprint(file: UploadFile = File(...)):
     emb = extract_face_embedding(path)
     return {"embedding": emb.tolist()}
 
-@app.post("/fingerprint/voice/")
+@app.post("/voice/")
 async def voice_fingerprint(file: UploadFile = File(...)):
     path = f"/tmp/{file.filename}"
     with open(path, "wb") as f:
