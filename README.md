@@ -21,6 +21,7 @@ Uses [SerpApi](https://serpapi.com/) for basic web and YouTube search and includ
 - `GET /search/youtube/` – YouTube search
 - `GET /search/social/` – **stub** social media search
 - `GET /search/darkweb/` – **stub** dark web search
+- `POST /search/image/` – reverse image search (SerpApi)
 
 Set the environment variable `SERPAPI_KEY` for search endpoints.
 
