@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deepfake Detection Search Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #7c3aed 100%);
+        }
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <i class="fas fa-user-shield text-3xl mr-3"></i>
+                    <h1 class="text-2xl md:text-3xl font-bold">DeepGuard</h1>
+                </div>
+                <nav class="flex space-x-6">
+                    <a href="#" class="hover:text-blue-200 transition">Home</a>
+                    <a href="#" class="hover:text-blue-200 transition">About</a>
+                    <a href="#" class="hover:text-blue-200 transition">API</a>
+                    <a href="#" class="hover:text-blue-200 transition">Contact</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Search Section -->
+        <section class="mb-12">
+            <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Search for Unauthorized Media</h2>
+
+                <div class="flex flex-col md:flex-row gap-4 mb-6">
+                    <div class="flex-1">
+                        <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Name or Username</label>
+                        <div class="relative">
+                            <input type="text" id="search" placeholder="Enter celebrity, athlete, or public figure"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <button class="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-48">
+                        <label for="platform" class="block text-sm font-medium text-gray-700 mb-1">Platform</label>
+                        <select id="platform" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="all">All Platforms</option>
+                            <option value="twitter">Twitter</option>
+                            <option value="instagram">Instagram</option>
+                            <option value="facebook">Facebook</option>
+                            <option value="tiktok">TikTok</option>
+                            <option value="youtube">YouTube</option>
+                            <option value="reddit">Reddit</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div>
+                        <label for="content-type" class="block text-sm font-medium text-gray-700 mb-1">Content Type</label>
+                        <select id="content-type" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="all">All Types</option>
+                            <option value="image">Images</option>
+                            <option value="video">Videos</option>
+                            <option value="audio">Audio</option>
+                            <option value="deepfake">Deepfakes</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="date-range" class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+                        <select id="date-range" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="all">All Time</option>
+                            <option value="today">Today</option>
+                            <option value="week">This Week</option>
+                            <option value="month">This Month</option>
+                            <option value="year">This Year</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="confidence" class="block text-sm font-medium text-gray-700 mb-1">Confidence Level</label>
+                        <select id="confidence" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="high">High (80-100%)</option>
+                            <option value="medium" selected>Medium (60-80%)</option>
+                            <option value="low">Low (40-60%)</option>
+                            <option value="all">All Levels</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-3 mb-4">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                        <i class="fas fa-user-tag mr-1"></i> Celebrity
+                    </span>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                        <i class="fas fa-running mr-1"></i> Athlete
+                    </span>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+                        <i class="fas fa-microphone-alt mr-1"></i> Influencer
+                    </span>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                        <i class="fas fa-user-tie mr-1"></i> Politician
+                    </span>
+                </div>
+
+                <button id="search-btn" class="w-full md:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition duration-300 flex items-center justify-center">
+                    <i class="fas fa-search mr-2"></i> Search for Deepfakes
+                </button>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section>
+            <div id="results-header" class="flex flex-col md:flex-row justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Search Results</h2>
+                <div class="flex items-center mt-4 md:mt-0">
+                    <span class="text-sm text-gray-600 mr-3">Sort by:</span>
+                    <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option>Most Recent</option>
+                        <option>Highest Confidence</option>
+                        <option>Most Shares</option>
+                        <option>Most Likely Deepfake</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="loading" class="hidden flex flex-col items-center justify-center py-12">
+                <div class="loading-spinner border-4 border-blue-500 border-t-transparent rounded-full w-12 h-12 mb-4"></div>
+                <p class="text-gray-600">Scanning platforms for unauthorized content...</p>
+            </div>
+
+            <div id="results-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Sample Result Card 1 -->
+                <div class="result-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
+                    <div class="relative">
+                        <img src="https://via.placeholder.com/400x225" alt="Potential deepfake" class="w-full h-48 object-cover">
+                        <div class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+                            <i class="fas fa-exclamation-triangle mr-1"></i> 87%
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-lg text-gray-800">Unauthorized Video on TikTok</h3>
+                            <span class="text-xs text-gray-500">2 days ago</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">Video appears to show celebrity endorsing product they've never mentioned publicly.</p>
+                        <div class="flex items-center text-sm text-gray-500 mb-3">
+                            <i class="fas fa-link mr-1"></i>
+                            <span class="truncate">tiktok.com/@fakeuser/video/123456</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                <i class="fas fa-video mr-1"></i> Video
+                            </span>
+                            <div class="flex space-x-2">
+                                <button class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-flag"></i>
+                                </button>
+                                <button class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sample Result Card 2 -->
+                <div class="result-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
+                    <div class="relative">
+                        <img src="https://via.placeholder.com/400x225" alt="Potential deepfake" class="w-full h-48 object-cover">
+                        <div class="absolute top-2 right-2 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">
+                            <i class="fas fa-exclamation-triangle mr-1"></i> 72%
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-lg text-gray-800">Fake Interview Image</h3>
+                            <span class="text-xs text-gray-500">1 week ago</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">Altered image of athlete appearing in magazine they've never been featured in.</p>
+                        <div class="flex items-center text-sm text-gray-500 mb-3">
+                            <i class="fas fa-link mr-1"></i>
+                            <span class="truncate">instagram.com/p/CAbcdefghij/</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                <i class="fas fa-image mr-1"></i> Image
+                            </span>
+                            <div class="flex space-x-2">
+                                <button class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-flag"></i>
+                                </button>
+                                <button class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sample Result Card 3 -->
+                <div class="result-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
+                    <div class="relative">
+                        <img src="https://via.placeholder.com/400x225" alt="Potential deepfake" class="w-full h-48 object-cover">
+                        <div class="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded">
+                            <i class="fas fa-exclamation-triangle mr-1"></i> 65%
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-lg text-gray-800">Voice Clone Audio</h3>
+                            <span class="text-xs text-gray-500">3 weeks ago</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">Audio clip circulating on messaging apps with politician's voice saying things they never said.</p>
+                        <div class="flex items-center text-sm text-gray-500 mb-3">
+                            <i class="fas fa-link mr-1"></i>
+                            <span class="truncate">reddit.com/r/deepfakes/comments/xyz123</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <i class="fas fa-microphone mr-1"></i> Audio
+                            </span>
+                            <div class="flex space-x-2">
+                                <button class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-flag"></i>
+                                </button>
+                                <button class="text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 flex justify-center">
+                <button class="px-6 py-2 border border-blue-500 text-blue-500 hover:bg-blue-50 font-medium rounded-lg transition duration-300">
+                    Load More Results
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold mb-4">DeepGuard</h3>
+                    <p class="text-gray-400 text-sm">Protecting public figures from unauthorized digital impersonation and deepfake content.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Resources</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">API Documentation</a></li>
+                        <li><a href="#" class="hover:text-white transition">Detection Methods</a></li>
+                        <li><a href="#" class="hover:text-white transition">Research Papers</a></li>
+                        <li><a href="#" class="hover:text-white transition">Case Studies</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Legal</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white transition">DMCA</a></li>
+                        <li><a href="#" class="hover:text-white transition">Copyright</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Contact</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-center"><i class="fas fa-envelope mr-2"></i> contact@deepguard.com</li>
+                        <li class="flex items-center"><i class="fas fa-phone mr-2"></i> +1 (555) 123-4567</li>
+                        <li class="flex items-center"><i class="fas fa-map-marker-alt mr-2"></i> San Francisco, CA</li>
+                    </ul>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400 text-sm">
+                <p>© 2023 DeepGuard. All rights reserved. This tool is for research and educational purposes only.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('search-btn').addEventListener('click', function() {
+            // Show loading indicator
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('results-container').classList.add('opacity-50');
+
+            // Simulate API call with timeout
+            setTimeout(function() {
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('results-container').classList.remove('opacity-50');
+
+                // In a real app, you would update the results here with data from your API
+            }, 2000);
+        });
+
+        // This would be replaced with actual API calls in a production environment
+        function searchDeepfakes(query, filters) {
+            // Example structure for what the API call might look like
+            /*
+            fetch('/api/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    query: query,
+                    filters: filters
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Process and display results
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+            */
+        }
+    </script>
+</body>
+</html>
