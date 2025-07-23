@@ -6,7 +6,7 @@ from detection_service.frame_extractor import download_video, extract_frames
 
 app = FastAPI(title="Detection Service")
 
-@app.post("/detect/face/")
+@app.post("/face/")
 async def detect_face(
     client: UploadFile = File(...),
     suspect: UploadFile = File(...),
@@ -26,7 +26,7 @@ async def detect_face(
     os.remove(tmp2)
     return {"matched": matched, "similarity": score}
 
-@app.post("/detect/voice/")
+@app.post("/voice/")
 async def detect_voice(
     client: UploadFile = File(...),
     suspect: UploadFile = File(...),
@@ -45,7 +45,7 @@ async def detect_voice(
     os.remove(tmp2)
     return {"matched": matched, "similarity": score}
 
-@app.post("/detect/video/")
+@app.post("/video/")
 async def detect_video(
     client: UploadFile = File(...),
     video_url: str = Form(...),

@@ -158,6 +158,27 @@
                 </button>
             </div>
         </section>
+
+        <!-- Verification Section -->
+        <section class="mt-12">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Verify Suspect Media</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-4 rounded-xl shadow">
+                    <h3 class="font-semibold mb-2">Face Match</h3>
+                    <input type="file" id="face-client" accept="image/*" class="mb-2 w-full">
+                    <input type="file" id="face-suspect" accept="image/*" class="mb-4 w-full">
+                    <button id="face-check-btn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">Check Image</button>
+                    <p id="face-result" class="mt-2 text-sm text-gray-700"></p>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow">
+                    <h3 class="font-semibold mb-2">Voice Match</h3>
+                    <input type="file" id="voice-client" accept="audio/*" class="mb-2 w-full">
+                    <input type="file" id="voice-suspect" accept="audio/*" class="mb-4 w-full">
+                    <button id="voice-check-btn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">Check Audio</button>
+                    <p id="voice-result" class="mt-2 text-sm text-gray-700"></p>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Footer -->
@@ -229,6 +250,34 @@
                 document.getElementById('loading').classList.add('hidden');
                 container.classList.remove('opacity-50');
             }
+        });
+
+        document.getElementById('face-check-btn').addEventListener('click', async function() {
+            const client = document.getElementById('face-client').files[0];
+            const suspect = document.getElementById('face-suspect').files[0];
+            if (!client || !suspect) return;
+            const form = new FormData();
+            form.append('client', client);
+            form.append('suspect', suspect);
+            const res = await fetch('/detect/face/', { method: 'POST', body: form });
+            const data = await res.json();
+            document.getElementById('face-result').textContent = data.matched ?
+                `Match (${(data.similarity * 100).toFixed(1)}%)` :
+                `No Match (${(data.similarity * 100).toFixed(1)}%)`;
+        });
+
+        document.getElementById('voice-check-btn').addEventListener('click', async function() {
+            const client = document.getElementById('voice-client').files[0];
+            const suspect = document.getElementById('voice-suspect').files[0];
+            if (!client || !suspect) return;
+            const form = new FormData();
+            form.append('client', client);
+            form.append('suspect', suspect);
+            const res = await fetch('/detect/voice/', { method: 'POST', body: form });
+            const data = await res.json();
+            document.getElementById('voice-result').textContent = data.matched ?
+                `Match (${(data.similarity * 100).toFixed(1)}%)` :
+                `No Match (${(data.similarity * 100).toFixed(1)}%)`;
         });
     </script>
 </body>
